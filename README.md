@@ -1,0 +1,1 @@
+Yapay Zekaya karşı XOX
