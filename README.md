@@ -13,4 +13,4 @@ Oyun herhangi bir tarafın kazanması sonucu sona erecek.
 "exit" komutu ile oyundan çıkılacak.
 
 ## Komut Listesi
-//Eklenecek
+...
