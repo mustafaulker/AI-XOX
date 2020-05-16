@@ -63,11 +63,9 @@ def level_chooser():
             continue
         # Level secenekleri
         if int(level_choose) == 1:
-            easy_game()
-            break
+            game_operation('1')
         elif int(level_choose) == 2:
-            medium_game()
-            break
+            game_operation('2')
         elif int(level_choose) == 3:
             print('\nHard level will be added soon.')
             continue
@@ -91,18 +89,16 @@ def end_game_menu():
         exit()
 
 
-# Easy level oyun isleyisi
-def easy_game():
-    while 1:
-        user_move()
-        easy_ai_move()
-
-
-# Medium level oyun isleyisi
-def medium_game():
-    while 1:
-        user_move()
-        medium_ai_move()
+# Level secimine bagli oyun isleyisi
+def game_operation(levelchoose):
+    if levelchoose == '1':
+        while 1:
+            user_move()
+            easy_ai_move()
+    elif levelchoose == '2':
+        while 1:
+            user_move()
+            medium_ai_move()
 
 
 # How to play mesaji
@@ -129,35 +125,41 @@ def board_printer():
 
 
 # Oyunun devam edip etmedigini / Kazanani kontrol etme
-def check_game():
+# Medium level AI hamlesi icin olası senaryo testlerinde kullanilacak hamle sonucu testi
+def check_board():
     # Yatay kontrol
     for i in range(0, 3):
         if main_board[i] == ['X', 'X', 'X']:
-            winner_is('X')
+            return 'X'
         elif main_board[i] == ['O', 'O', 'O']:
-            winner_is('O')
+            return 'O'
     # Dikey kontrol
     for i in range(0, 3):
         if (main_board[0][i] != ' ' and
                 main_board[0][i] == main_board[1][i] and
                 main_board[1][i] == main_board[2][i]):
-            winner_is(main_board[0][i])
+            return main_board[0][i]
     # Capraz kontrol 1
     if (main_board[0][0] != ' ' and
             main_board[0][0] == main_board[1][1] and
             main_board[0][0] == main_board[2][2]):
-        winner_is(main_board[0][0])
+        return main_board[0][0]
     # Capraz kontrol 2
     if (main_board[0][2] != ' ' and
             main_board[0][2] == main_board[1][1] and
             main_board[0][2] == main_board[2][0]):
-        winner_is(main_board[0][2])
-    # Board'da bos yuva kalmadiysa beraberlik
+        return main_board[0][2]
+
+
+def check_game():
+    if check_board() == 'X':
+        winner_is('X')
+    elif check_board() == 'O':
+        winner_is('O')
     elif not any(' ' in sl for sl in main_board):
         print("Draw")
         sleep(2)
         end_game_menu()
-    # Kazanan yoksa ve bos yuva varsa oyuna devam et
     else:
         sleep(1)
         return
@@ -190,77 +192,39 @@ def easy_ai_move():
     check_game()
 
 
-# Medium level AI hamlesi icin olası senaryo testlerinde kullanilacak hamle sonucu testi
-# check_game() ile ayni kontrolleri yapiyor
-def possible_scenario_winner():
-    for i in range(0, 3):
-        if main_board[i] == ['X', 'X', 'X']:
-            return 'X'
-        elif main_board[i] == ['O', 'O', 'O']:
-            return 'O'
-    for i in range(0, 3):
-        if (main_board[0][i] != ' ' and
-                main_board[0][i] == main_board[1][i] and
-                main_board[1][i] == main_board[2][i]):
-            return main_board[0][i]
-    if (main_board[0][0] != ' ' and
-            main_board[0][0] == main_board[1][1] and
-            main_board[0][0] == main_board[2][2]):
-        return main_board[0][0]
-    if (main_board[0][2] != ' ' and
-            main_board[0][2] == main_board[1][1] and
-            main_board[0][2] == main_board[2][0]):
-        return main_board[0][2]
-    else:
-        return
-
-
-# AI'ın gelecek hamlede kazanip kazanamayacagi kontrolu.
-# Kazanabildigi senaryo olmasi durumunda hamlesini kazanan kordinata yapacak.
-def can_ai_win():
+# AI ve Kullanicinin gelecek hamlede kazanip kazanamayacagi kontrolu.
+# AI'in kazanabildigi senaryoda hamlesini kazanan koordinata yapacak.
+# Kullanicinin kazanabildigi senaryoda, hamlesini blocklayan koordinata yapacak.
+def can_ai_win_block():
     duplicate_board = main_board
     for i in range(len(duplicate_board)):
         for j in range(len(duplicate_board[i])):
             if duplicate_board[i][j] == ' ':
                 duplicate_board[i][j] = 'O'
-                if possible_scenario_winner() == 'O':
+                if check_board() == 'O':
                     main_board[i][j] = 'O'
                     print(f'\nAI Move: [{i+1}, {j+1}]')
                     board_printer()
                     check_game()
                     return True
                 else:
-                    duplicate_board[i][j] = ' '
-            else:
-                continue
-
-
-# Kullanicinin gelecek hamlede kazanip kazanip kazanamayacagi kontrolu.
-# Kullanicinin kazanabildigi senaryo olmasi durumunda AI hamlesini kazanan kordinata yaparak User'ı blocklayacak.
-def can_player_win():
-    duplicate_board = main_board
-    for i in range(len(duplicate_board)):
-        for j in range(len(duplicate_board[i])):
-            if duplicate_board[i][j] == ' ':
-                duplicate_board[i][j] = 'X'
-                if possible_scenario_winner() == 'X':
-                    main_board[i][j] = 'O'
-                    print(f'\nAI Move: [{i+1}, {j+1}]')
-                    board_printer()
-                    check_game()
-                    return True
-                else:
-                    duplicate_board[i][j] = ' '
+                    duplicate_board[i][j] = 'X'
+                    if check_board() == 'X':
+                        main_board[i][j] = 'O'
+                        print(f'\nAI Move: [{i + 1}, {j + 1}]')
+                        board_printer()
+                        check_game()
+                        return True
+                    else:
+                        duplicate_board[i][j] = ' '
             else:
                 continue
 
 
 # Medium level AI hamlesi.
-# Kazanan senaryo ya da block senaryosu olmadigi durumlarda random hamle yapacak.
+# Kazanma ya da block senaryosu olmadigi durumlarda random hamle yapacak.
 def medium_ai_move():
-    if can_ai_win():
-        return
-    elif can_player_win():
+    if can_ai_win_block():
         return
     else:
         easy_ai_move()
