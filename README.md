@@ -1,16 +1,39 @@
 # Yapay Zekaya karşı XOX
-3x3 matris üzerinde bilgisayara karşı oynanacak XOX(Tic-Tac-Toe).
+
+Minimax Algorithm ile XOX (Tic-Tac-Toe)
 
 ## Oynanış
-Açılan konsolda "start" komutu ile oyun başlayacak.
-    
-Bilgisayar 3x3 matrisin herhangi bir koordinatına ilk hamlesini yapacak.
 
-Kullanıcı, "2-1" şeklinde matris koordinatı girerek hamlesini yapacak.
+Açılış menüsünde oyunu başlatabilir ya da nasıl oynandığına bakabilirsiniz.
 
-Oyun herhangi bir tarafın kazanması sonucu sona erecek.
+Oyuna başlamadan önce AI zorluğu seçmeniz gerekecek.
 
-"exit" komutu ile oyundan çıkılacak.
+Zorluk seçtikten sonra hamle yapmanız beklenmektedir.
 
-## Komut Listesi
-...
+## Levels
+
+**1. Easy**= Hamlelerini tamamen rastgele oynar.
+
+**2. Medium**= Sadece bir hamle sonrasının kontrolünü yaparak, gelecek hamle için en uygun koordinatı seçer.
+
+**3. Hard**= Minimax Algoritmasını kullanır. Tüm olasılıklar için olası en iyi hamleyi hesaplar. 
+
+## Geçerli hamleler
+
+\-----------------------
+
+|  (1 1) (1 2) (1 3)  | 
+
+|  (2 1) (2 2) (2 3)  | 
+
+|  (3 1) (3 2) (3 3)  |
+
+\-----------------------
+
+Geçerli hamle örneği= `2 1`
+
+(Oyun içi 'How to Play' menüsünden de erişilebilir.)
+
+##Oyun sonu
+
+Oyun sonu menüsü üzerinden isterseniz zorluk seviyesi seçerek tekrar oynayabilir, ana menüye dönebilir ya da oyundan çıkabilirsiniz. 
