@@ -1,5 +1,5 @@
 from random import randrange
-from time import sleep
+import time
 
 main_board = [['', '', ''], ['', '', ''], ['', '', '']]
 intro_b = [['X', 'O', 'X'], ['O', 'X', 'O'], ['X', 'O', 'X']]
@@ -9,7 +9,7 @@ how_to_b = [['(1 1)', '(1 2)', '(1 3)'], ['(2 1)', '(2 2)', '(2 3)'], ['(3 1)', 
 # Oyun baslangic mesaji
 def intro():
     print('  ', 'Welcome to the game.', '\n\t\t', *intro_b[0], '\n\t\t', *intro_b[1], '\n\t\t', *intro_b[2])
-    sleep(1)
+    time.sleep(1)
 
 
 # Bos board yaratma
@@ -149,8 +149,7 @@ def winner_determination():
             main_board[0][2] == main_board[1][1] and
             main_board[0][2] == main_board[2][0]):
         return main_board[0][2]
-    else:
-        return ' '
+    return ' '
 
 
 # Oyun durumu kontrolu
@@ -161,10 +160,10 @@ def any_winner():
         winner_is('O')
     elif not any(' ' in sl for sl in main_board):
         print("Draw")
-        sleep(2)
+        time.sleep(2)
         end_game_menu()
     else:
-        sleep(1)
+        time.sleep(1)
         return
 
 
@@ -172,11 +171,11 @@ def any_winner():
 def winner_is(winner):
     if winner == 'X':
         print('X Wins.')
-        sleep(2)
+        time.sleep(2)
         end_game_menu()
     else:
         print('O Wins.')
-        sleep(2)
+        time.sleep(2)
         end_game_menu()
 
 
@@ -199,20 +198,18 @@ def easy_ai_move():
 # AI'in kazanabildigi senaryoda hamlesini kazanan koordinata yapacak.
 # Kullanicinin kazanabildigi senaryoda, hamlesini blocklayan koordinata yapacak.
 def medium_ai_move():
-    duplicate_board = main_board
-    for i in range(len(duplicate_board)):
-        for j in range(len(duplicate_board[i])):
-            if duplicate_board[i][j] == ' ':
-                duplicate_board[i][j] = 'O'
+    for i in range(len(main_board)):
+        for j in range(len(main_board[i])):
+            if main_board[i][j] == ' ':
+                main_board[i][j] = 'O'
                 # AI'in gelecek hamlede kazanabilmesi
                 if winner_determination() == 'O':
-                    main_board[i][j] = 'O'
                     print(f'\nAI Move: [{i + 1}, {j + 1}]')
                     board_printer()
                     any_winner()
                     return True
                 else:
-                    duplicate_board[i][j] = 'X'
+                    main_board[i][j] = 'X'
                     # Kullanicinin gelecek hamlede kazanabilmesi durumunda block
                     if winner_determination() == 'X':
                         main_board[i][j] = 'O'
@@ -221,76 +218,96 @@ def medium_ai_move():
                         any_winner()
                         return True
                     else:
-                        duplicate_board[i][j] = ' '
+                        main_board[i][j] = ' '
             else:
                 continue
     easy_ai_move()
 
 
-# Olasi senaryo hesaplarinda hamle sirasi takibi
-def xo_counter():
-    no_of_x = main_board[0].count('X') + main_board[1].count('X') + main_board[2].count('X')
-    no_of_o = main_board[0].count('O') + main_board[1].count('O') + main_board[2].count('O')
-    return True if no_of_x <= no_of_o else False
+# Gelecek hamlede hangi kullanicinin oynayacagini belirlemek icin oyuncu tutma variable'i (hard_ai_move() component)
+x_turn = False
 
 
-# Belirlenen koordinata, sirasi gelen hamleyi yap (hard_ai_move() component)
-def add_next(x, y):
-    main_board[x][y] = "X" if xo_counter() else "O"
+# Hamlelerin koordinatlarini cevirme. (hard_ai_move() component)
+def convert_move_coord(x, y):
+    return 3 - y, x - 1
 
 
-# Son yapilan hamleyi sil (hard_ai_move() component)
-def undo_next(x, y):
-    main_board[x][y] = ' '
+# Siradaki koordinatin dolu oldup olmadigi kontrolu. (hard_ai_move() component)
+def check_cell_is_occupied(x, y):
+    i, j = convert_move_coord(x, y)
+    if main_board[i][j] != ' ':
+        return True
+    return False
 
 
-# Hard Level AI hamlesi.
-# Minimax Algorithm
+# Belirlenen koordinata, sirasidaki hamleyi yap. (hard_ai_move() component)
+def make_move(x, y):
+    global x_turn
+    i, j = convert_move_coord(x, y)
+    main_board[i][j] = "X" if x_turn else "O"
+    x_turn = not x_turn
+
+
+# Yapilan son hamleyi sil. (hard_ai_move() component)
+def undo_move(x, y):
+    global x_turn
+    i, j = convert_move_coord(x, y)
+    main_board[i][j] = ' '
+    x_turn = not x_turn
+
+
+# Hard Level AI hamlesi. (Minimax Algorithm)
 def hard_ai_move():
-    max_score = -1000
-    best_step = [-1, -1]
-    for i in range(0, 3):
-        for j in range(0, 3):
-            if main_board[i][j] == ' ':
-                add_next(i, j)
-                score = minmax_score_calc(False)
-                if score > max_score:
-                    max_score = score
-                    best_step = [i, j]
-                undo_next(i, j)
-    add_next(best_step[0], best_step[1])
-    print('\nAI Move: ', best_step[0] + 1, best_step[1] + 1)
+    global x_turn
+    max_score = -100
+    best_move = [0, 0]
+    start = time.time()
+    for i in range(1, 4):
+        for j in range(1, 4):
+            if not check_cell_is_occupied(i, j):
+                x_turn = False
+                make_move(i, j)
+                current_score = minimax_score_calc(False)
+                if current_score > max_score:
+                    max_score = current_score
+                    best_move = [i, j]
+                undo_move(i, j)
+    make_move(best_move[0], best_move[1])
+    print("\nCalculation time: ", round(time.time() - start, 3), "seconds.")
+    hard_x_coord, hard_y_coord = convert_move_coord(best_move[0], best_move[1])
+    print("AI Move: ", hard_x_coord + 1, hard_y_coord + 1)
     board_printer()
     any_winner()
 
 
-# Minimax için score hesabi (hard_ai_move() component)
-def minmax_score_calc(is_max):
-    who_won = winner_determination()
-    if who_won == 'O':
+# Minimax için score hesabi. (hard_ai_move() component)
+def minimax_score_calc(is_max):
+    winner = winner_determination()
+    if winner == 'O':
         return 10
-    elif who_won != ' ':
+    elif winner != ' ':
         return -10
     else:
         if not any(' ' in sl for sl in main_board):
             return 0
         else:
             if is_max:
-                target_score = -10000
-                for i in range(0, 3):
-                    for j in range(0, 3):
-                        if main_board[i][j] == ' ':
-                            add_next(i, j)
-                            target_score = max(minmax_score_calc(False), target_score)
-                            undo_next(i, j)
+                target_score = -100
+                for i in range(1, 4):
+                    for j in range(1, 4):
+                        if not check_cell_is_occupied(i, j):
+                            make_move(i, j)
+                            target_score = max(minimax_score_calc(False), target_score)
+                            undo_move(i, j)
             else:
-                target_score = 10000
-                for i in range(0, 3):
-                    for j in range(0, 3):
-                        if main_board[i][j] == ' ':
-                            add_next(i, j)
-                            target_score = min(minmax_score_calc(True), target_score)
-                            undo_next(i, j)
+                target_score = 100
+                for i in range(1, 4):
+                    for j in range(1, 4):
+                        if not check_cell_is_occupied(i, j):
+                            make_move(i, j)
+                            target_score = min(minimax_score_calc(True), target_score)
+                            undo_move(i, j)
     return target_score
 
 
@@ -328,5 +345,5 @@ def user_move():
 
 
 if __name__ == '__main__':
-    # intro()
+    intro()
     main_menu()
