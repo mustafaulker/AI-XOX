@@ -34,6 +34,6 @@ Geçerli hamle örneği= `2 1`
 
 (Oyun içi 'How to Play' menüsünden de erişilebilir.)
 
-##Oyun sonu
+## Oyun sonu
 
 Oyun sonu menüsü üzerinden isterseniz zorluk seviyesi seçerek tekrar oynayabilir, ana menüye dönebilir ya da oyundan çıkabilirsiniz. 
