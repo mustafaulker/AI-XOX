@@ -204,7 +204,7 @@ def medium_ai_move():
                 main_board[i][j] = 'O'
                 # AI'in gelecek hamlede kazanabilmesi
                 if winner_determination() == 'O':
-                    print(f'\nAI Move: [{i + 1}, {j + 1}]')
+                    print(f'\nAI Move: {i + 1} {j + 1}')
                     board_printer()
                     any_winner()
                     return True
@@ -213,7 +213,7 @@ def medium_ai_move():
                     # Kullanicinin gelecek hamlede kazanabilmesi durumunda block
                     if winner_determination() == 'X':
                         main_board[i][j] = 'O'
-                        print(f'\nAI Move: [{i + 1}, {j + 1}]')
+                        print(f'\nAI Move: {i + 1} {j + 1}')
                         board_printer()
                         any_winner()
                         return True
