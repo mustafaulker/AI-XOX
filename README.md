@@ -1,39 +1,30 @@
-# Yapay Zekaya karşı XOX
+# AI-XOX
 
-Minimax Algorithm ile XOX (Tic-Tac-Toe)
+## XOX (Tic-Tac-Toe) Game vs AI powered by Minimax Algorithm
 
-## Oynanış
+## Gameplay
 
-Açılış menüsünde oyunu başlatabilir ya da nasıl oynandığına bakabilirsiniz.
+In the Main menu, the user can inspect how it is played or directly get into the game.  
+AI difficulty is selected when the game starts.  
+After the selection, the user is expected to make moves.
 
-Oyuna başlamadan önce AI zorluğu seçmeniz gerekecek.
+### Difficulty Levels
 
-Zorluk seçtikten sonra hamle yapmanız beklenmektedir.
+**1- Easy**= Complete random moves.  
+**2- Medium**= Checks the moves only for one move ahead, chooses the best move then plays it.  
+**3. Hard**= Uses the Minimax Algorithm. Calculates the best moves for all scenarios.
 
-## Levels
+### Valid Move Schema
 
-**1. Easy**= Hamlelerini tamamen rastgele oynar.
+|-----------------------|  
+|  (1 1) (1 2) (1 3)  |  
+|  (2 1) (2 2) (2 3)  |  
+|  (3 1) (3 2) (3 3)  |  
+|-----------------------|  
 
-**2. Medium**= Sadece bir hamle sonrasının kontrolünü yaparak, gelecek hamle için en uygun koordinatı seçer.
+Valid move example = `2 1`  
+(Schema can also be accessed from the 'How to Play' Menu in the game.)
 
-**3. Hard**= Minimax Algoritmasını kullanır. Tüm olasılıklar için olası en iyi hamleyi hesaplar. 
+### End Game
 
-## Geçerli hamleler
-
-\-----------------------
-
-|  (1 1) (1 2) (1 3)  | 
-
-|  (2 1) (2 2) (2 3)  | 
-
-|  (3 1) (3 2) (3 3)  |
-
-\-----------------------
-
-Geçerli hamle örneği= `2 1`
-
-(Oyun içi 'How to Play' menüsünden de erişilebilir.)
-
-## Oyun sonu
-
-Oyun sonu menüsü üzerinden isterseniz zorluk seviyesi seçerek tekrar oynayabilir, ana menüye dönebilir ya da oyundan çıkabilirsiniz. 
+At the end of the game, the user can restart the game, return to the main menu or exit the game.
