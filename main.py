@@ -6,25 +6,25 @@ intro_b = [['X', 'O', 'X'], ['O', 'X', 'O'], ['X', 'O', 'X']]
 how_to_b = [['(1 1)', '(1 2)', '(1 3)'], ['(2 1)', '(2 2)', '(2 3)'], ['(3 1)', '(3 2)', '(3 3)']]
 
 
-# Oyun baslangic mesaji
+# Intro Message
 def intro():
     print('  ', 'Welcome to the game.', '\n\t\t', *intro_b[0], '\n\t\t', *intro_b[1], '\n\t\t', *intro_b[2])
     time.sleep(1)
 
 
-# Bos board yaratma
+# Creation of empty board
 def generate_board():
     for i in range(3):
         for j in range(3):
             main_board[i][j] = ' '
 
 
-# Ana menu
+# Main Menu
 def main_menu():
     print('\nPlease choose your action from the menu:', "\n'1'- Start game.\n'2'- How to play.\n'3'- Exit.")
     while True:
         menu_choose = input('Provide an input: ')
-        # Girdi kontrolleri
+        # Input checks
         if not menu_choose.isdigit():
             print('You should enter a number.')
             continue
@@ -34,7 +34,7 @@ def main_menu():
         if not (1 <= int(menu_choose) <= 3):
             print('Selection should be from 1 to 3')
             continue
-        # Menu secenekleri
+        # Menu options
         if int(menu_choose) == 1:
             generate_board()
             level_chooser()
@@ -49,19 +49,19 @@ def main_menu():
             continue
 
 
-# Level secimi
+# Level selection
 def level_chooser():
     while True:
         print("\nChoose AI Level: \n'1'- Easy \n'2'- Medium \n'3'- Hard")
         level_choose = input('Your choice: ')
-        # Girdi kontrolleri
+        # Input checks
         if len(level_choose) != 1:
             print('You should enter a number of your choice.')
             continue
         if not (1 <= int(level_choose) <= 3):
             print('Selection should be from 1 to 3')
             continue
-        # Level secenekleri
+        # Level options
         if int(level_choose) == 1:
             game_operation('1')
         elif int(level_choose) == 2:
@@ -73,7 +73,7 @@ def level_chooser():
             continue
 
 
-# Oyun sonu menusu
+# End game menu
 def end_game_menu():
     print('\nGame over.\nChoose your action:'
           "\n'1'- Quick restart.\n'2'- Go to main menu.\n'Any key'- Exit.\n")
@@ -88,7 +88,7 @@ def end_game_menu():
         exit()
 
 
-# Level secimine bagli oyun isleyisi
+# Game logic based on level selection
 def game_operation(levelchoose):
     if levelchoose == '1':
         while 1:
@@ -104,7 +104,7 @@ def game_operation(levelchoose):
             hard_ai_move()
 
 
-# How to play mesaji
+# How to play message
 def how_to_play():
     print('\nHow to Play:\nPossible move coordinates on the board.\n-----------------------'
           '\n| ', *how_to_b[0], ' |', '\n| ', *how_to_b[1], ' |', '\n| ', *how_to_b[2], ' |'
@@ -113,7 +113,7 @@ def how_to_play():
         main_menu()
 
 
-# Board yazdirma
+# Printing the board
 def board_printer():
     print("---------")
     for i in range(len(main_board)):
@@ -124,27 +124,26 @@ def board_printer():
     print('---------')
 
 
-# Oyunun kazanani kontrol etme
-# Medium level AI hamlesi icin olası senaryo testlerinde kullanilan hamle sonucu testi
+# Winner control
 def winner_determination():
-    # Yatay kontrol
+    # Horizontal check
     for i in range(0, 3):
         if main_board[i] == ['X', 'X', 'X']:
             return 'X'
         elif main_board[i] == ['O', 'O', 'O']:
             return 'O'
-    # Dikey kontrol
+    # Vertical check
     for i in range(0, 3):
         if (main_board[0][i] != ' ' and
                 main_board[0][i] == main_board[1][i] and
                 main_board[1][i] == main_board[2][i]):
             return main_board[0][i]
-    # Capraz kontrol 1
+    # Diagonal check 1
     if (main_board[0][0] != ' ' and
             main_board[0][0] == main_board[1][1] and
             main_board[0][0] == main_board[2][2]):
         return main_board[0][0]
-    # Capraz kontrol 2
+    # Diagonal check 2
     if (main_board[0][2] != ' ' and
             main_board[0][2] == main_board[1][1] and
             main_board[0][2] == main_board[2][0]):
@@ -152,7 +151,7 @@ def winner_determination():
     return ' '
 
 
-# Oyun durumu kontrolu
+# Game state check
 def any_winner():
     if winner_determination() == 'X':
         winner_is('X')
@@ -167,7 +166,7 @@ def any_winner():
         return
 
 
-# Kazanan oldugunda yapilacak islem
+# If there is a winner
 def winner_is(winner):
     if winner == 'X':
         print('X Wins.')
@@ -179,30 +178,29 @@ def winner_is(winner):
         end_game_menu()
 
 
-# Easy level AI hamlesi
+# Easy level AI move
 def easy_ai_move():
-    if any(' ' in sl for sl in main_board):  # Bos yuva kontrolu
+    if any(' ' in sl for sl in main_board):  # Empty slot check
         while 1:
-            comp_coord = randrange(0, 3), randrange(0, 3)  # Random koordinat elde etme
-            if main_board[comp_coord[0]][comp_coord[1]] != ' ':  # Eger random koordinat yuvası bos degilse tekrar uret
+            comp_coord = randrange(0, 3), randrange(0, 3)  # Generating random coordinates
+            if main_board[comp_coord[0]][comp_coord[1]] != ' ':  # Check if generated coordinates are empty
                 continue
             else:
-                main_board[comp_coord[0]][comp_coord[1]] = 'O'  # Bos ise hamleyi yap, degerleri 1 arttirarak yazdir
+                # If empty, do the move. Print the coordinates by increasing the values by 1
+                main_board[comp_coord[0]][comp_coord[1]] = 'O'
                 print('\nAI Move: ', comp_coord[0] + 1, comp_coord[1] + 1)
                 break
     board_printer()
     any_winner()
 
 
-# Medium level AI hamlesi.
-# AI'in kazanabildigi senaryoda hamlesini kazanan koordinata yapacak.
-# Kullanicinin kazanabildigi senaryoda, hamlesini blocklayan koordinata yapacak.
+# Medium level AI move.
 def medium_ai_move():
     for i in range(len(main_board)):
         for j in range(len(main_board[i])):
             if main_board[i][j] == ' ':
                 main_board[i][j] = 'O'
-                # AI'in gelecek hamlede kazanabilmesi
+                # If AI can win in the next round
                 if winner_determination() == 'O':
                     print(f'\nAI Move: {i + 1} {j + 1}')
                     board_printer()
@@ -210,7 +208,7 @@ def medium_ai_move():
                     return True
                 else:
                     main_board[i][j] = 'X'
-                    # Kullanicinin gelecek hamlede kazanabilmesi durumunda block
+                    # If the user can win in the next round
                     if winner_determination() == 'X':
                         main_board[i][j] = 'O'
                         print(f'\nAI Move: {i + 1} {j + 1}')
@@ -224,16 +222,16 @@ def medium_ai_move():
     easy_ai_move()
 
 
-# Gelecek hamlede hangi kullanicinin oynayacagini belirlemek icin oyuncu tutma variable'i (hard_ai_move() component)
+# Determination of which player is playing on the next round. (hard_ai_move() component)
 x_turn = False
 
 
-# Hamlelerin koordinatlarini cevirme. (hard_ai_move() component)
+# Conversion of the moves. (hard_ai_move() component)
 def convert_move_coord(x, y):
     return 3 - y, x - 1
 
 
-# Siradaki koordinatin dolu oldup olmadigi kontrolu. (hard_ai_move() component)
+# Check if the next coordinates are occupied. (hard_ai_move() component)
 def check_cell_is_occupied(x, y):
     i, j = convert_move_coord(x, y)
     if main_board[i][j] != ' ':
@@ -241,7 +239,7 @@ def check_cell_is_occupied(x, y):
     return False
 
 
-# Belirlenen koordinata, sirasidaki hamleyi yap. (hard_ai_move() component)
+# Make move to determined coordinates. (hard_ai_move() component)
 def make_move(x, y):
     global x_turn
     i, j = convert_move_coord(x, y)
@@ -249,7 +247,7 @@ def make_move(x, y):
     x_turn = not x_turn
 
 
-# Yapilan son hamleyi sil. (hard_ai_move() component)
+# Undo the last move. (hard_ai_move() component)
 def undo_move(x, y):
     global x_turn
     i, j = convert_move_coord(x, y)
@@ -257,7 +255,7 @@ def undo_move(x, y):
     x_turn = not x_turn
 
 
-# Hard Level AI hamlesi. (Minimax Algorithm)
+# Hard Level AI move. (Minimax Algorithm)
 def hard_ai_move():
     global x_turn
     max_score = -100
@@ -281,7 +279,7 @@ def hard_ai_move():
     any_winner()
 
 
-# Minimax için score hesabi. (hard_ai_move() component)
+# Score calculation for Minimax. (hard_ai_move() component)
 def minimax_score_calc(is_max):
     winner = winner_determination()
     if winner == 'O':
@@ -311,19 +309,19 @@ def minimax_score_calc(is_max):
     return target_score
 
 
-# Kullanicidan koordinat istemi ve girdi kontrolu (user_move() component)
+# Get coordinates from the user, check the input (user_move() component)
 def get_coordinates():
     while True:
         print('Enter Coordinates:', end=' ')
         coord_input = input().split()
-        if not coord_input[0].isdigit() or not coord_input[1].isdigit():  # Girdi kontrolleri
+        if not coord_input[0].isdigit() or not coord_input[1].isdigit():  # Input checks
             print('You should enter numbers!')
             continue
         if len(coord_input) != 2:
             print('You should enter two numbers of coordinates.')
             continue
 
-        coord_input = [int(ui) - 1 for ui in coord_input]  # Girdi degerlerinin 1 dusurulmesi. '1 2' -> '0 1'
+        coord_input = [int(ui) - 1 for ui in coord_input]  # Decreasing of input coordinates. '1 2' -> '0 1'
 
         if not (0 <= coord_input[0] < 3 and 0 <= coord_input[1] < 3):
             print('Coordinates should be from 1 to 3!')
@@ -335,7 +333,7 @@ def get_coordinates():
     return coord_input
 
 
-# Kullanici hamlesi
+# User move
 def user_move():
     print('\nUser\'s Move: ')
     user_coord = get_coordinates()
